@@ -30,4 +30,4 @@ jobs:
       run: npm run build
 
     - name: Check Build Folder
-      run: ls -latr
+      run: cd build && ls -latr

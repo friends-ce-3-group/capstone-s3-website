@@ -7,8 +7,6 @@ on:
     branches: [ main ]
 
 env:
-  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_S3_BUCKET_NAME: friends-capstone-s3-website
 
 jobs:
@@ -43,5 +41,5 @@ jobs:
       with:
         aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}     
-        aws_bucket: ${{ AWS_S3_BUCKET_NAME }}
+        aws_bucket: ${{ env.AWS_S3_BUCKET_NAME }}
         source_dir: build

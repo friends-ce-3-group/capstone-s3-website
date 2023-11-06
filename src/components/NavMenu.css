@@ -1,0 +1,31 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Pacifico');
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+.navbar-font {
+    font-family: 'Pacifico';
+    color: #001A72
+}
+
+.navbar-create-card-button {
+  font-size: 15px;
+  color: #001A72
+}
+

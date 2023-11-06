@@ -1,0 +1,199 @@
+﻿/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+code {
+  color: #E01A76;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+
+.canvas {
+  margin-top: 25px;
+  width: 100%;
+  align-content: center;
+}
+
+.card-canvas {
+    width: 100%;
+    vertical-align: middle;
+    padding: 10px;
+    margin: 0;
+}
+
+.card-board {
+    background-color: cornsilk;
+}
+
+.card-entries {
+    display: flex;
+    flex-wrap: wrap
+}
+
+.card-entry-wide {
+  margin: 8px;
+  padding: 10px;
+  font-size: 12px;
+  width: 400px;
+  background-color: transparent
+}
+
+.card-entry-narrow {
+  margin: 8px;
+  padding: 10px;
+  font-size: 12px;
+  width: 180px;
+  background-color: transparent
+}
+
+.card-entry-preview {
+  border: dashed;
+  border-color: #CCCCCC;
+  border-width: thin
+}
+
+.card-input-area {
+  padding: 10px;
+  margin: 0;
+}
+
+.card-input-area-item {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.card-header {
+
+}
+
+.card-turn-page-left {
+  font-size: 25px;
+  color: #CCCCCC;
+  height: 100%;
+  padding-top: 60%;
+}
+
+.card-turn-page-right {
+  font-size: 25px;
+  color: #CCCCCC;
+  height: 100%;
+  padding-top: 60%;
+}
+
+.card-footer {
+    width:90%;
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    justify-content: center
+}
+
+.card-final-page {
+  height: 100%;
+  padding-top: 64%;
+  text-align: center;
+  font-size: 10px
+}
+
+.card-flip-button {
+  background-color: transparent;
+  border-color: ActiveBorder;
+  color: ActiveBorder
+}
+
+.create-card-steps-flow {
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
+
+.create-card-tile {
+  margin: 10px;
+  width: 180px;
+  height: 252px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.create-card-tile:hover {
+  cursor: grab;
+}
+
+.form-button-back {
+  display: inline-flex;
+  align-items: center;
+}
+
+
+.form-button-forward {
+  display: inline-flex;
+  align-items: center;
+}
+
+.form-button-icon {
+}
+
+.create-card-form-text {
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+.create-card-preview {
+  margin-top: 0px;
+  margin-left: 20px;
+  margin-right: 20px;
+  width: 250px;
+  height: 350px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.make-payment-area {
+  margin-top: 40px;
+  text-align: center
+}
+
+.make-payment-card {
+    border-width: 1px;
+    border-color: #CCCCCC;
+    width: 200px;
+    height: 200px;
+    margin: 10px;
+}
+
+.make-payment-buy-button {
+  width: 40%;
+  position: absolute;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  margin-left: 18%
+}
+
+.price-normal {
+}
+
+.price-before {
+    text-decoration:line-through;
+    color: #949494;
+}
+
+.price-after {
+}
+
+.sign-card-link-area {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+  text-align: center;
+  background-color: beige;
+  border-radius: 10px;
+  width: 100%;
+}

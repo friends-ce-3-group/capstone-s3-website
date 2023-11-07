@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 env:
-  AWS_S3_BUCKET_NAME: friends-capstone-s3-website
+  AWS_S3_BUCKET_NAME: friends-capstone-infra-s3-website
 
 jobs:
   build:

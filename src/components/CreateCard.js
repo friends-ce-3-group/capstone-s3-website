@@ -194,9 +194,9 @@ export class CreateCard extends Component {
 
     console.log('onFileRemove: ', file);
 
-    let {
-      uploadFileList
-    } = this.state;
+    //let {
+    //  uploadFileList
+    //} = this.state;
     //const index = uploadFileList.indexOf(file);
     //const newFileList = uploadFileList.slice();
     //newFileList.splice(index, 1);

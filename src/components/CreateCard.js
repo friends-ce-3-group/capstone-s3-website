@@ -1,33 +1,14 @@
 import React, { Component } from 'react';
 import { Upload, Menu, Image, Space, Button, Input, DatePicker, TimePicker, Select, QRCode, message, Steps } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
-import { ArrowLeftOutlined, ShoppingCartOutlined, CopyOutlined, InboxOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, ShoppingCartOutlined, CopyOutlined, UploadOutlined } from '@ant-design/icons';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { MakePayment } from './MakePayment';
 import { ImageStore, Categories } from '../utilities/ImageStore'
 import { TimezonesString } from '../utilities/Timezones'
+import { AWS_API_GATEWAY_UPLOAD_IMAGE_URL } from '../utilities/Constants'
 import { AWS_S3_STATIC_HOST, AWS_API_GATEWAY, AWS_API_GATEWAY_CARDS_FUNCTION, AWS_API_GATEWAY_CARDS_TABLE } from '../utilities/Constants'
 import moment from 'moment-timezone';
-const { Dragger } = Upload;
-const props = {
-  name: 'file',
-  multiple: false,
-  action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-  onChange(info) {
-    const { status } = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e) {
-    console.log('Dropped files', e.dataTransfer.files);
-  },
-};
 
 export class CreateCard extends Component {
   static displayName = CreateCard.name;
@@ -46,6 +27,8 @@ export class CreateCard extends Component {
       sendTime: '',
       sendTimezone: '',
       signcardid: '',
+      uploadFileList: [],
+      isUploading: false,
     };
 
   }
@@ -66,6 +49,12 @@ export class CreateCard extends Component {
     }
   }
 
+  setUploadFileList = (list) => {
+    this.setState({uploadFileList: list});
+  }
+  setIsUploading = (val) => {
+    this.setState({isUploading: val});
+  }
   setRecipientName = (val) => {
     this.setState({ recipientName: val })
   }
@@ -89,9 +78,7 @@ export class CreateCard extends Component {
   }
 
   setSelectedCategory = (categoryIndex) => {
-    console.log('categoryIndex', categoryIndex);
     const selectedCategory = Categories()[categoryIndex - 1];
-    console.log('selectedCategory', selectedCategory);
     this.setState({ categorySelected: selectedCategory.label });
   }
 
@@ -203,12 +190,79 @@ export class CreateCard extends Component {
     await this.insertCard();
   }
 
+  onFileRemove = (file) => {
+
+    console.log('onFileRemove: ', file);
+
+    let {
+      uploadFileList
+    } = this.state;
+    //const index = uploadFileList.indexOf(file);
+    //const newFileList = uploadFileList.slice();
+    //newFileList.splice(index, 1);
+    //this.setUploadFileList(newFileList);
+    this.setUploadFileList([]);
+  }
+
+  beforeFileUpload = (file) => {
+    console.log('beforeFileUpload: ', file);
+    //this.setUploadFileList([...this.state.uploadFileList, file]);
+    this.setUploadFileList([file]);
+    return false; // return false to prevent auto-upload
+  }
+
+  handleFileUpload = async () => {
+    let {
+      uploadFileList
+    } = this.state;
+    const formData = new FormData();
+
+    // even though this is a list, there will only be one file uploaded at a time
+    uploadFileList.forEach((file) => {
+      formData.append('files[]', file);
+    });
+    this.setIsUploading(true);
+
+    let fileAccessType = 'Public';
+    let fileCategory = 'Birthday';
+    let fileUniqueId = uuidv4();
+    let fileName = uploadFileList[0].name;
+    let fileType = uploadFileList[0].type;
+    
+    let file_upload_url = AWS_API_GATEWAY_UPLOAD_IMAGE_URL.replace("{filename}", `${fileAccessType}-${fileCategory}-${fileUniqueId}-${fileName}`);
+    console.log('File Information', uploadFileList[0])
+    console.log('File Upload URL', file_upload_url)
+   
+    await fetch(file_upload_url, {
+      method: 'PUT',
+      body: uploadFileList[0],
+      headers: {
+        "Content-type": fileType
+      }
+    })
+      .then((res) => {
+        console.log("uploadresult", res.json());
+      })
+      .then(() => {
+        this.setUploadFileList([]);
+        message.success('upload successfully.');
+      })
+      .catch(() => {
+        message.error('upload failed.');
+      })
+      .finally(() => {
+        this.setIsUploading(false);
+      });
+  }
+
   render() {
     let {
       stage,
       categorySelected,
       cardImage,
-      signcardid
+      signcardid,
+      uploadFileList,
+      isUploading
     } = this.state;
 
     return (
@@ -242,15 +296,24 @@ export class CreateCard extends Component {
               {
                 (categorySelected === 'Upload')?
                     <div style={{width: '100%'}}>
-                      <Dragger {...props}>
-                        <p className="ant-upload-drag-icon">
-                          <InboxOutlined />
-                        </p>
-                        <p className="ant-upload-text">Click or drag an image file to this area to upload</p>
-                        <p className="ant-upload-hint">
-                          
-                        </p>
-                      </Dragger>
+                      <Upload 
+                        onRemove={(file) => this.onFileRemove(file)}
+                        beforeUpload={(file) => this.beforeFileUpload(file)}
+                        fileList={uploadFileList}
+                        >
+                        <Button icon={<UploadOutlined />}>Select File</Button>
+                      </Upload>
+                      <Button
+                          type="primary"
+                          onClick={() => this.handleFileUpload()}
+                          disabled={uploadFileList.length === 0}
+                          loading={isUploading}
+                          style={{
+                            marginTop: 16,
+                          }}
+                        >
+                          {isUploading ? 'Uploading' : 'Start Upload'}
+                        </Button>
                     </div>
                   : ""
               }

@@ -8,4 +8,4 @@ export const AWS_API_GATEWAY_CARDS_TABLE = "justinlim-demo1-dynamodb-cards-table
 export const AWS_API_GATEWAY_MESSAGES_TABLE = "justinlim-demo1-dynamodb-messages-table"
 
 //new
-export const AWS_API_GATEWAY_UPLOAD_IMAGE_URL = "https://jrninuipv2.execute-api.us-east-1.amazonaws.com/dev/friends-capstone-infra-s3-images-uploader/originals/{filename}";
+export const AWS_API_GATEWAY_UPLOAD_IMAGE_URL = "https://s3yxtjf6y0.execute-api.us-east-1.amazonaws.com/dev/friends-capstone-infra-s3-images-bucket/originals/{filename}";

@@ -58,8 +58,7 @@ class SignCard extends Component {
       if (res.status === 200) {
         const data = await res.json();
         console.log('data', data);
-        if (data.Count > 0) {
-          const card = data.Items[0];
+        const card = data;
 
           // create countdown timer
           const sendDate = card.sendDate;
@@ -77,10 +76,6 @@ class SignCard extends Component {
             endTime: endTime.format(),
             cardDetails: card,
           });
-
-        } else {
-          message.error("Oops. This card was not found.");
-        }
       } else {
         message.error("Oops. This card was not found.");
       }
@@ -98,17 +93,30 @@ class SignCard extends Component {
     }).then(async res => {
       if (res.status === 200) {
         const data = await res.json();
-        console.log('data', data);
+        console.log('data.id', data.id);
         let entries = [];
-        if (data.Count > 0) {
-          entries = data.Items;
+        if (!data.id) {
+          entries = data
+        } else {
+          entries.push(data);
         }
+        
 
         let displayEntries = this.createPages(entries);
         this.setState({
           allEntries: entries,
           displayEntries: displayEntries,
           numPages: displayEntries.length,
+          currPage: 1
+        });
+      }
+      else {
+        const data = await res.json();
+        console.log('data', data);
+        this.setState({
+          allEntries: [],
+          displayEntries: [],
+          numPages: 1,
           currPage: 1
         });
       }
@@ -173,9 +181,9 @@ class SignCard extends Component {
       id: id,
       cardId: this.props.params.id,
       name: this.state.yourName,
-      value: this.state.yourEntry,
+      message: this.state.yourEntry,
       wordCount: this.state.yourEntry.split(' ').length,
-      createdDateTime: Date.now,
+      createdDateTime: Date.now(),
     }
     return entry;
   }
@@ -205,7 +213,7 @@ class SignCard extends Component {
 
   confirmEntry = async () => {
     let newEntry = this.createEntry();
-
+    console.log('newEntry', newEntry);
     //save new Message into database
     await fetch(`${AWS_CF_HOST_NAME}/${AWS_CF_SIGN_CARD_URL}`, {
       method: 'POST',
@@ -306,7 +314,7 @@ class SignCard extends Component {
                                   displayEntries[currPage - 1].map((entry, idx) =>
                                     <div key={idx} className={entry.name === yourName ? 'card-entry-preview' : ' '}>
                                       <div
-                                        dangerouslySetInnerHTML={{ __html: entry.value }}
+                                        dangerouslySetInnerHTML={{ __html: entry.message }}
                                         className={entry.wordCount < CARD_NARROW_WIDE_THESHOLD ? 'card-entry-narrow' : 'card-entry-wide'}
                                         style={{ rotate: entry.wordCount < CARD_NARROW_WIDE_THESHOLD ? (idx % 2 === 0 ? -1 : 1 * (idx - idx + 2)) + 'deg' : '0deg' }}
                                       />
@@ -348,7 +356,8 @@ class SignCard extends Component {
                           },
                           {
                             value: 'image',
-                            label: 'Add Image'
+                            label: 'Add Image',
+                            disabled: true
                           }
                         ]}
                       />

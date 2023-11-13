@@ -7,7 +7,11 @@ import { MakePayment } from './MakePayment';
 import { ImageStore, Categories } from '../utilities/ImageStore'
 import { TimezonesString } from '../utilities/Timezones'
 import { AWS_API_GATEWAY_UPLOAD_IMAGE_URL } from '../utilities/Constants'
-import { AWS_S3_STATIC_HOST, AWS_API_GATEWAY, AWS_API_GATEWAY_CARDS_FUNCTION, AWS_API_GATEWAY_CARDS_TABLE } from '../utilities/Constants'
+import { 
+  AWS_CF_HOST_NAME,
+  AWS_CF_GET_CARDS_CATALOG_URL,
+  AWS_CF_CREATE_CARD_URL
+ } from '../utilities/Constants'
 import moment from 'moment-timezone';
 
 export class CreateCard extends Component {
@@ -29,13 +33,32 @@ export class CreateCard extends Component {
       signcardid: '',
       uploadFileList: [],
       isUploading: false,
+      catalogIsLoading: true
     };
 
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    await this.getCatalog();
+  }
+
+  getCatalog = async () => {
     this.setState({
-      
+      catalogIsLoading: true
+    });
+    await fetch(`${AWS_CF_HOST_NAME}/${AWS_CF_GET_CARDS_CATALOG_URL}`, {
+      method: 'GET',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      }
+    }).then(async res => {
+      if (res.status === 200) {
+        console.log(res);
+      } else {
+      }
+    });
+    this.setState({
+      catalogIsLoading: false
     });
   }
 
@@ -76,32 +99,27 @@ export class CreateCard extends Component {
   setSendTimezone = (val) => {
     this.setState({ sendTimezone: val })
   }
-
   setSelectedCategory = (categoryIndex) => {
     const selectedCategory = Categories()[categoryIndex - 1];
     this.setState({ categorySelected: selectedCategory.label });
   }
-
   selectCardImage = (card) => {
     this.setState({
       stage: 'filldetails',
       cardImage: card
     });
   }
-
   backToSelectCard = () => {
     this.setState({
       stage: 'selectcard',
       cardImage: null
     });
   }
-
   backToFillDetails = () => {
     this.setState({
       stage: 'filldetails'
     });
   }
-
   goToPayment = () => {
     const {
       cardImage,
@@ -125,7 +143,6 @@ export class CreateCard extends Component {
       stage: 'makepayment'
     });
   }
-
   goToSignCardLink = async () => {
 
     //[TODO]: communicate with STRIPE to get success/unsuccessful status
@@ -162,14 +179,9 @@ export class CreateCard extends Component {
       createdDataTime: Date.now()
     }
 
-    const cardObjectForLambda = {
-      TableName: `${AWS_API_GATEWAY_CARDS_TABLE}`,
-      Item: card
-    }
-
-    await fetch(`${AWS_API_GATEWAY}/${AWS_API_GATEWAY_CARDS_FUNCTION}`, {
+    await fetch(`${AWS_CF_HOST_NAME}/${AWS_CF_CREATE_CARD_URL}`, {
       method: 'POST',
-      body: JSON.stringify(cardObjectForLambda),
+      body: JSON.stringify(card),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       }
@@ -416,15 +428,15 @@ export class CreateCard extends Component {
         {stage === 'signcard' ?
           <div className={'sign-card-link-area'}>
             <div style={{ paddingTop: '20px', marginBottom: '10px' }} >
-              Your card is successully created. Share the link below!
+              Your card is successfully created. Share the link below!
             </div>
             <div style={{display:'flex', justifyContent:'center'}}>
-              <a href={ './#/sign/' + signcardid } target='_blank' rel="noreferrer">{ AWS_S3_STATIC_HOST + '/#/sign/' + signcardid }</a>
-              <Button icon={<CopyOutlined />} shape={'circle'} style={{marginLeft:'5px'}} />
+              <a href={ './#/sign/' + signcardid } target='_blank' rel="noreferrer">{ AWS_CF_HOST_NAME + '/#/sign/' + signcardid }</a>
+              <Button icon={<CopyOutlined />} shape={'circle'} style={{marginLeft:'5px'}} disabled/>
             </div>
             <div style={{display:'flex', justifyContent:'center'}}>
               <QRCode
-                value={ AWS_S3_STATIC_HOST + '/#/sign/' + signcardid }
+                value={ AWS_CF_HOST_NAME + '/#/sign/' + signcardid }
               />
             </div>
             <Button

@@ -10,7 +10,7 @@ import defaultImage from '../images/farewell1.jpg'
 import { Home } from './Home';
 import { CountDown } from './CountDown';
 import moment from 'moment-timezone';
-import { AWS_API_GATEWAY, AWS_API_GATEWAY_CARDS_FUNCTION, AWS_API_GATEWAY_CARDS_TABLE, AWS_API_GATEWAY_MESSAGES_TABLE, AWS_API_GATEWAY_MESSAGES_FUNCTION, AWS_S3_STATIC_HOST } from '../utilities/Constants'
+import { AWS_CF_HOST_NAME, AWS_CF_GET_CARD_URL, AWS_CF_GET_MESSAGES_URL, AWS_CF_SIGN_CARD_URL } from '../utilities/Constants'
 const CARD_NARROW_WIDE_THESHOLD = 80;
 const CARD_MAX_WORD_COUNT_PER_PAGE = 250;
 
@@ -46,7 +46,7 @@ class SignCard extends Component {
   }
 
   getCardDetails = async (id) => {
-    const url = `${AWS_API_GATEWAY}/${AWS_API_GATEWAY_CARDS_FUNCTION}?TableName=${AWS_API_GATEWAY_CARDS_TABLE}&Id=${id}`;
+    const url = `${AWS_CF_HOST_NAME}/${AWS_CF_GET_CARD_URL}?cardId=${id}`;
     console.log('url', url);
     await fetch(url, {
       method: 'GET',
@@ -88,7 +88,7 @@ class SignCard extends Component {
   }
 
   getCardMessages = async (cardId) => {
-    const url = `${AWS_API_GATEWAY}/${AWS_API_GATEWAY_MESSAGES_FUNCTION}?TableName=${AWS_API_GATEWAY_MESSAGES_TABLE}&CardId=${cardId}`;
+    const url = `${AWS_CF_HOST_NAME}/${AWS_CF_GET_MESSAGES_URL}?cardId=${cardId}`;
     console.log('url', url);
     await fetch(url, {
       method: 'GET',
@@ -206,15 +206,10 @@ class SignCard extends Component {
   confirmEntry = async () => {
     let newEntry = this.createEntry();
 
-    const messageObjectForLambda = {
-      TableName: `${AWS_API_GATEWAY_MESSAGES_TABLE}`,
-      Item: newEntry
-    }
-    console.log('messageObjectForLambda', JSON.stringify(messageObjectForLambda),)
     //save new Message into database
-    await fetch(`${AWS_API_GATEWAY}/${AWS_API_GATEWAY_MESSAGES_FUNCTION}`, {
+    await fetch(`${AWS_CF_HOST_NAME}/${AWS_CF_SIGN_CARD_URL}`, {
       method: 'POST',
-      body: JSON.stringify(messageObjectForLambda),
+      body: JSON.stringify(newEntry),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       }
@@ -394,7 +389,7 @@ class SignCard extends Component {
                       </Space>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <a href={'./'} >{`${AWS_S3_STATIC_HOST}`}</a>
+                      <a href={'./'} >{`${AWS_CF_HOST_NAME}`}</a>
                     </div>
                   </div>
                 }

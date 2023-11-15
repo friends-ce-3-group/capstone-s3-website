@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Upload, Menu, Image, Space, Button, Input, DatePicker, TimePicker, Select, QRCode, message, Steps } from 'antd';
+import { Upload, Menu, Image, Space, Button, Input, DatePicker, TimePicker, Select, QRCode, message, Steps, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { ArrowLeftOutlined, ShoppingCartOutlined, CopyOutlined, UploadOutlined } from '@ant-design/icons';
 import ReceiptIcon from '@mui/icons-material/Receipt';
@@ -33,6 +33,8 @@ export class CreateCard extends Component {
       signcardid: '',
       uploadFileList: [],
       isUploading: false,
+      uploadAccessType: 'Public',
+      uploadCategoryType: 'All',
       catalogIsLoading: true
     };
 
@@ -74,6 +76,13 @@ export class CreateCard extends Component {
 
   setUploadFileList = (list) => {
     this.setState({uploadFileList: list});
+  }
+  setUploadAccessType = (e) => {
+    this.setState({uploadAccessType: e.target.value})
+  }
+  setUploadCategoryType = (val) => {
+    console.log(val)
+    this.setState({uploadCategoryType: val})
   }
   setIsUploading = (val) => {
     this.setState({isUploading: val});
@@ -235,8 +244,8 @@ export class CreateCard extends Component {
     });
     this.setIsUploading(true);
 
-    let fileAccessType = 'Public';
-    let fileCategory = 'Birthday';
+    let fileAccessType = this.state.uploadAccessType;
+    let fileCategory = this.state.uploadCategoryType;
     let fileUniqueId = uuidv4();
     let fileName = uploadFileList[0].name;
     let fileType = uploadFileList[0].type;
@@ -274,7 +283,9 @@ export class CreateCard extends Component {
       cardImage,
       signcardid,
       uploadFileList,
-      isUploading
+      isUploading,
+      uploadAccessType,
+      uploadCategoryType
     } = this.state;
 
     return (
@@ -307,25 +318,45 @@ export class CreateCard extends Component {
             <div style={{ display: 'flex', flexWrap: 'wrap' }} >
               {
                 (categorySelected === 'Upload')?
-                    <div style={{width: '100%'}}>
-                      <Upload 
-                        onRemove={(file) => this.onFileRemove(file)}
-                        beforeUpload={(file) => this.beforeFileUpload(file)}
-                        fileList={uploadFileList}
-                        >
-                        <Button icon={<UploadOutlined />}>Select File</Button>
-                      </Upload>
-                      <Button
-                          type="primary"
-                          onClick={() => this.handleFileUpload()}
-                          disabled={uploadFileList.length === 0}
-                          loading={isUploading}
-                          style={{
-                            marginTop: 16,
-                          }}
-                        >
-                          {isUploading ? 'Uploading' : 'Start Upload'}
-                        </Button>
+                    <div style={{width: '100%', marginLeft: '10px'}}>
+                      <div style={{marginBottom: '15px'}}>
+                        <Upload 
+                          onRemove={(file) => this.onFileRemove(file)}
+                          beforeUpload={(file) => this.beforeFileUpload(file)}
+                          fileList={uploadFileList}
+                          >
+                          <Button icon={<UploadOutlined />}>Select File</Button>
+                        </Upload>
+                      </div>
+                      <div style={{marginBottom: '15px'}}>
+                        <Radio.Group onChange={this.setUploadAccessType} value={uploadAccessType}>
+                          <Radio value={'Private'}>Private</Radio>
+                          <Radio value={'Public'}>Public</Radio>
+                        </Radio.Group>
+                      </div>
+                      <div style={{marginBottom: '15px'}}>
+                        <Select
+                          placeholder="Select a Category"
+                          onChange={this.setUploadCategoryType}
+                          options={Categories().filter(x => x.label != 'Upload').map(cat => ({
+                            label: cat.label,
+                            value: cat.label
+                          }))}
+                        />
+                      </div>
+                      <div style={{marginBottom: '15px'}}>
+                        <Button
+                            type="primary"
+                            onClick={() => this.handleFileUpload()}
+                            disabled={uploadFileList.length === 0}
+                            loading={isUploading}
+                            style={{
+                              marginTop: 16,
+                            }}
+                          >
+                            {isUploading ? 'Uploading' : 'Start Upload'}
+                          </Button>
+                      </div>
                     </div>
                   : ""
               }
@@ -370,11 +401,17 @@ export class CreateCard extends Component {
                       disabled={stage !== 'filldetails'}
                       onChange={this.setSendDate}
                       disabledDate={(current) => {
-                        return moment().add(1, 'days') >= current ||
+                        return moment().add(-1, 'days') >= current ||
                           moment().add(3, 'month') <= current;
                       }}
                     />
-                    <TimePicker minuteStep={60} secondStep={60} disabled={stage !== 'filldetails'} showNow={false}  onChange={this.setSendTime} />
+                    <TimePicker 
+                      minuteStep={5} 
+                      secondStep={60} 
+                      disabled={stage !== 'filldetails'} 
+                      showNow={false} 
+                      onChange={this.setSendTime} 
+                    />
                     <Select
                       style={{ width: 150 }}
                       options={TimezonesString()}

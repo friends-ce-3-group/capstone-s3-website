@@ -284,8 +284,7 @@ export class CreateCard extends Component {
       signcardid,
       uploadFileList,
       isUploading,
-      uploadAccessType,
-      uploadCategoryType
+      uploadAccessType
     } = this.state;
 
     return (
@@ -338,7 +337,7 @@ export class CreateCard extends Component {
                         <Select
                           placeholder="Select a Category"
                           onChange={this.setUploadCategoryType}
-                          options={Categories().filter(x => x.label != 'Upload').map(cat => ({
+                          options={Categories().filter(x => x.label !== 'Upload').map(cat => ({
                             label: cat.label,
                             value: cat.label
                           }))}

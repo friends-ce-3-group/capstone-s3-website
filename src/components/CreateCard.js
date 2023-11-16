@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { Upload, Menu, Image, Space, Button, Input, DatePicker, TimePicker, Select, QRCode, message, Steps, Radio } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
-import { ArrowLeftOutlined, ShoppingCartOutlined, CopyOutlined, UploadOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, ShoppingCartOutlined, CopyOutlined, UploadOutlined, LoadingOutlined } from '@ant-design/icons';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import { MakePayment } from './MakePayment';
-import { ImageStore, Categories } from '../utilities/ImageStore'
+import { Categories } from '../utilities/ImageStore'
 import { TimezonesString } from '../utilities/Timezones'
 import { AWS_API_GATEWAY_UPLOAD_IMAGE_URL } from '../utilities/Constants'
 import { 
   AWS_CF_HOST_NAME,
   AWS_CF_GET_CARDS_CATALOG_URL,
-  AWS_CF_CREATE_CARD_URL
+  AWS_CF_CREATE_CARD_URL,
+  AWS_CF_GET_ORIGINALS_URL,
+  AWS_CF_GET_THUMBNAILS_URL
  } from '../utilities/Constants'
 import moment from 'moment-timezone';
 
@@ -35,7 +37,8 @@ export class CreateCard extends Component {
       isUploading: false,
       uploadAccessType: 'Public',
       uploadCategoryType: 'All',
-      catalogIsLoading: true
+      cardsCatalog: [],
+      cardsCatalogIsLoading: true
     };
 
   }
@@ -46,7 +49,7 @@ export class CreateCard extends Component {
 
   getCatalog = async () => {
     this.setState({
-      catalogIsLoading: true
+      cardsCatalogIsLoading: true
     });
     await fetch(`${AWS_CF_HOST_NAME}/${AWS_CF_GET_CARDS_CATALOG_URL}`, {
       method: 'GET',
@@ -55,13 +58,17 @@ export class CreateCard extends Component {
       }
     }).then(async res => {
       if (res.status === 200) {
-        console.log(res);
-      } else {
+        const data = await res.json();
+        console.log(data);
+        this.setState({
+          cardsCatalog: data
+        });
       }
+      this.setState({
+        cardsCatalogIsLoading: false
+      });
     });
-    this.setState({
-      catalogIsLoading: false
-    });
+
   }
 
   getStepIndex = () => {
@@ -174,7 +181,7 @@ export class CreateCard extends Component {
 
     const card = {
       id: id,
-      imageKey: cardImage.key,
+      imageKey: cardImage.cardkey,
       imageCategory: cardImage.category,
       imagePath: cardImage.path,
       imageBackgroundColor: cardImage.backgroundColor,
@@ -187,6 +194,8 @@ export class CreateCard extends Component {
       sendTimezone: sendTimezone,
       createdDataTime: Date.now()
     }
+
+    //console.log('Card To Post', card)
 
     await fetch(`${AWS_CF_HOST_NAME}/${AWS_CF_CREATE_CARD_URL}`, {
       method: 'POST',
@@ -261,8 +270,8 @@ export class CreateCard extends Component {
         "Content-type": fileType
       }
     })
-      .then((res) => {
-        console.log("uploadresult", res.json());
+      .then(async res => {
+        console.log("uploadresult", await res.json());
       })
       .then(() => {
         this.setUploadFileList([]);
@@ -284,7 +293,9 @@ export class CreateCard extends Component {
       signcardid,
       uploadFileList,
       isUploading,
-      uploadAccessType
+      uploadAccessType,
+      cardsCatalog,
+      cardsCatalogIsLoading
     } = this.state;
 
     return (
@@ -314,68 +325,74 @@ export class CreateCard extends Component {
               items={Categories()}
               onClick={(e) => this.setSelectedCategory(e.key)}
             />
-            <div style={{ display: 'flex', flexWrap: 'wrap' }} >
-              {
-                (categorySelected === 'Upload')?
-                    <div style={{width: '100%', marginLeft: '10px'}}>
-                      <div style={{marginBottom: '15px'}}>
-                        <Upload 
-                          onRemove={(file) => this.onFileRemove(file)}
-                          beforeUpload={(file) => this.beforeFileUpload(file)}
-                          fileList={uploadFileList}
-                          >
-                          <Button icon={<UploadOutlined />}>Select File</Button>
-                        </Upload>
-                      </div>
-                      <div style={{marginBottom: '15px'}}>
-                        <Radio.Group onChange={this.setUploadAccessType} value={uploadAccessType}>
-                          <Radio value={'Private'}>Private</Radio>
-                          <Radio value={'Public'}>Public</Radio>
-                        </Radio.Group>
-                      </div>
-                      <div style={{marginBottom: '15px'}}>
-                        <Select
-                          placeholder="Select a Category"
-                          onChange={this.setUploadCategoryType}
-                          options={Categories().filter(x => x.label !== 'Upload').map(cat => ({
-                            label: cat.label,
-                            value: cat.label
-                          }))}
-                        />
-                      </div>
-                      <div style={{marginBottom: '15px'}}>
-                        <Button
-                            type="primary"
-                            onClick={() => this.handleFileUpload()}
-                            disabled={uploadFileList.length === 0}
-                            loading={isUploading}
-                            style={{
-                              marginTop: 16,
-                            }}
-                          >
-                            {isUploading ? 'Uploading' : 'Start Upload'}
-                          </Button>
-                      </div>
-                    </div>
-                  : ""
-              }
-              {
-                (
-                  categorySelected !== 'Upload' ? 
-                    (categorySelected !== 'All' ? ImageStore().filter(x => x.category === categorySelected) : ImageStore()).map(card =>
-                        <div
-                          key={card.key}
-                          className={'create-card-tile'}
-                          style={{ backgroundColor: card.backgroundColor }}
-                          onClick={() => this.selectCardImage(card)}
-                        >
-                          <Image src={card.path} preview={false} />
+            {
+              cardsCatalogIsLoading? 
+                <LoadingOutlined />
+                :
+                <div style={{ display: 'flex', flexWrap: 'wrap' }} >
+                  {
+                    (categorySelected === 'Upload')?
+                        <div style={{width: '100%', marginLeft: '10px'}}>
+                          <div style={{marginBottom: '15px'}}>
+                            <Upload 
+                              onRemove={(file) => this.onFileRemove(file)}
+                              beforeUpload={(file) => this.beforeFileUpload(file)}
+                              fileList={uploadFileList}
+                              >
+                              <Button icon={<UploadOutlined />}>Select File</Button>
+                            </Upload>
+                          </div>
+                          <div style={{marginBottom: '15px'}}>
+                            <Radio.Group onChange={this.setUploadAccessType} value={uploadAccessType}>
+                              <Radio value={'Private'}>Private</Radio>
+                              <Radio value={'Public'}>Public</Radio>
+                            </Radio.Group>
+                          </div>
+                          <div style={{marginBottom: '15px'}}>
+                            <Select
+                              placeholder="Select a Category"
+                              onChange={this.setUploadCategoryType}
+                              options={Categories().filter(x => x.label !== 'Upload').map(cat => ({
+                                label: cat.label,
+                                value: cat.label
+                              }))}
+                            />
+                          </div>
+                          <div style={{marginBottom: '15px'}}>
+                            <Button
+                                type="primary"
+                                onClick={() => this.handleFileUpload()}
+                                disabled={uploadFileList.length === 0}
+                                loading={isUploading}
+                                style={{
+                                  marginTop: 16,
+                                }}
+                              >
+                                {isUploading ? 'Uploading' : 'Start Upload'}
+                              </Button>
+                          </div>
                         </div>
+                      : ""
+                  }
+                  {
+                    (
+                      categorySelected !== 'Upload' ? 
+                        (categorySelected !== 'All' ? cardsCatalog.filter(x => x.category === categorySelected) : cardsCatalog).map(card =>
+                            <div
+                              key={card.cardkey}
+                              className={'create-card-tile'}
+                              style={{ backgroundColor: card.backgroundColor }}
+                              onClick={() => this.selectCardImage(card)}
+                            >
+                              <Image src={AWS_CF_HOST_NAME + "/" + AWS_CF_GET_THUMBNAILS_URL + "/" + card.path} preview={false} />
+                            </div>
+                        )
+                      : ""
                     )
-                  : ""
-                )
-              }
-            </div>
+                  }
+                </div>
+            }
+
           </div>
           : ""
         }
@@ -449,7 +466,7 @@ export class CreateCard extends Component {
               className={'create-card-preview'}
               style={{ backgroundColor: cardImage.backgroundColor }}
             >
-              <Image src={cardImage.path} preview={false} />
+              <Image src={ AWS_CF_HOST_NAME + "/" + AWS_CF_GET_ORIGINALS_URL + "/" +  cardImage.path} preview={false} />
             </div>
           </div>
           : ''

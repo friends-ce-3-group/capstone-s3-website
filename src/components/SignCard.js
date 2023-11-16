@@ -6,11 +6,11 @@ import ReactQuill from 'react-quill';
 import Flippy, { FrontSide, BackSide } from 'react-flippy';
 import { v4 as uuidv4 } from 'uuid';
 import 'react-quill/dist/quill.snow.css';
-import defaultImage from '../images/farewell1.jpg'
+//import defaultImage from '../images/farewell1.jpg'
 import { Home } from './Home';
 import { CountDown } from './CountDown';
 import moment from 'moment-timezone';
-import { AWS_CF_HOST_NAME, AWS_CF_GET_CARD_URL, AWS_CF_GET_MESSAGES_URL, AWS_CF_SIGN_CARD_URL } from '../utilities/Constants'
+import { AWS_CF_HOST_NAME, AWS_CF_GET_CARD_URL, AWS_CF_GET_MESSAGES_URL, AWS_CF_SIGN_CARD_URL, AWS_CF_GET_ORIGINALS_URL } from '../utilities/Constants'
 const CARD_NARROW_WIDE_THESHOLD = 80;
 const CARD_MAX_WORD_COUNT_PER_PAGE = 250;
 
@@ -293,7 +293,7 @@ class SignCard extends Component {
                   <FrontSide style={{ backgroundColor: '#002744' }}>
                     <div className={'card-canvas'}>
                       <div>
-                        <Image src={defaultImage} preview={false} />
+                        <Image src={AWS_CF_HOST_NAME + "/" + AWS_CF_GET_ORIGINALS_URL + "/" + cardDetails.imageKey} preview={false} />
                       </div>
                       <div className={'card-footer'}>
                         <Button className={'card-flip-button'} onClick={() => { this.flipCard(); }} >Flip Over</Button>

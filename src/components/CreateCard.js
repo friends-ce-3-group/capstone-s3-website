@@ -11,7 +11,7 @@ import {
   AWS_CF_HOST_NAME,
   AWS_CF_GET_CARDS_CATALOG_URL,
   AWS_CF_CREATE_CARD_URL,
-  AWS_CF_GET_ORIGINALS_URL,
+  AWS_CF_GET_RESIZED_URL,
   AWS_CF_GET_THUMBNAILS_URL
  } from '../utilities/Constants'
 import moment from 'moment-timezone';
@@ -271,14 +271,20 @@ export class CreateCard extends Component {
       }
     })
       .then(async res => {
-        console.log("uploadresult", await res.json());
+        if (res.status === 200) {
+          //console.log("uploadresult", await res.json());
+          this.setUploadFileList([]);
+          message.success('upload successfully.');
+        }
       })
       .then(() => {
-        this.setUploadFileList([]);
-        message.success('upload successfully.');
+        //this.setUploadFileList([]);
+        //message.success('upload successfully.');
+        console.log("uploadresult success");
       })
-      .catch(() => {
-        message.error('upload failed.');
+      .catch((err) => {
+        //message.error('upload failed.');
+        console.log("uploadresult failed", err);
       })
       .finally(() => {
         this.setIsUploading(false);
@@ -466,7 +472,7 @@ export class CreateCard extends Component {
               className={'create-card-preview'}
               style={{ backgroundColor: cardImage.backgroundColor }}
             >
-              <Image src={ AWS_CF_HOST_NAME + "/" + AWS_CF_GET_ORIGINALS_URL + "/" +  cardImage.path} preview={false} />
+              <Image src={ AWS_CF_HOST_NAME + "/" + AWS_CF_GET_RESIZED_URL + "/" +  cardImage.path} preview={false} />
             </div>
           </div>
           : ''

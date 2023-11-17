@@ -59,9 +59,17 @@ export class CreateCard extends Component {
     }).then(async res => {
       if (res.status === 200) {
         const data = await res.json();
-        console.log(data);
+
+        let entries = [];
+        if (!data.cardkey) {
+          entries = data
+        } else {
+          entries.push(data);
+        }
+
+        console.log(entries);
         this.setState({
-          cardsCatalog: data
+          cardsCatalog: entries
         });
       }
       this.setState({

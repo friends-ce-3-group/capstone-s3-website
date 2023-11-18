@@ -290,10 +290,10 @@ class SignCard extends Component {
                   isFlipped={isFlipped}
                   style={{ width: '500px', height: '700px' }} /// these are optional style, it is not necessary
                 >
-                  <FrontSide style={{ backgroundColor: '#002744' }}>
+                  <FrontSide style={{ backgroundColor: '#FFFFFF' }}>
                     <div className={'card-canvas'}>
                       <div>
-                        <Image src={AWS_CF_HOST_NAME + "/" + AWS_CF_GET_RESIZED_URL + "/" + cardDetails.imageKey} preview={false} />
+                        <Image src={AWS_CF_HOST_NAME + "/" + AWS_CF_GET_RESIZED_URL + "/" + cardDetails.imagePath} preview={false} />
                       </div>
                       <div className={'card-footer'}>
                         <Button className={'card-flip-button'} onClick={() => { this.flipCard(); }} >Flip Over</Button>

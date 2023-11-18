@@ -96,7 +96,6 @@ export class CreateCard extends Component {
     this.setState({uploadAccessType: e.target.value})
   }
   setUploadCategoryType = (val) => {
-    console.log(val)
     this.setState({uploadCategoryType: val})
   }
   setIsUploading = (val) => {
@@ -230,7 +229,7 @@ export class CreateCard extends Component {
 
   onFileRemove = (file) => {
 
-    console.log('onFileRemove: ', file);
+    //console.log('onFileRemove: ', file);
 
     //let {
     //  uploadFileList
@@ -269,7 +268,7 @@ export class CreateCard extends Component {
     
     let file_upload_url = AWS_API_GATEWAY_UPLOAD_IMAGE_URL.replace("{filename}", `${fileAccessType}-${fileCategory}-${fileUniqueId}-${fileName}`);
     console.log('File Information', uploadFileList[0])
-    console.log('File Upload URL', file_upload_url)
+    //console.log('File Upload URL', file_upload_url)
    
     await fetch(file_upload_url, {
       method: 'PUT',

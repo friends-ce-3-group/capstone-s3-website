@@ -1,5 +1,5 @@
 //new (these links to be replaced with CloudFront links later)
-export const AWS_API_GATEWAY_UPLOAD_IMAGE_URL = "https://0twzhclich.execute-api.us-west-2.amazonaws.com/dev/friends-capstone-infra-s3-images/originals/{filename}";
+export const AWS_API_GATEWAY_UPLOAD_IMAGE_URL = "https://ybqb8ftiy3.execute-api.us-west-2.amazonaws.com/dev/friends-capstone-infra-s3-images/originals/{filename}";
 //https://dae7avsudwv03.cloudfront.net/upload/dev/friends-capstone-infra-s3-images/originals/test.png
 
 //export const AWS_ALB_CRUD_HOST_NAME = "http://friends-capstone-ecs-shared-alb-2059628003.us-west-2.elb.amazonaws.com:5000";

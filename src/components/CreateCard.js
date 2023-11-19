@@ -279,6 +279,8 @@ export class CreateCard extends Component {
     console.log('File Information', uploadFileList[0])
     //console.log('File Upload URL', file_upload_url)
    
+    const hasToken = await window.AwsWafIntegration.hasToken();
+    console.log("Has token", hasToken)
     const token = await window.AwsWafIntegration.getToken();
     console.log("file upload token", token)
 

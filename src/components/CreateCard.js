@@ -15,7 +15,7 @@ import {
   AWS_CF_GET_THUMBNAILS_URL
  } from '../utilities/Constants'
 import moment from 'moment-timezone';
-import { CaptchaBox } from './CaptchaBox';
+//import { CaptchaBox } from './CaptchaBox';
 
 export class CreateCard extends Component {
   static displayName = CreateCard.name;

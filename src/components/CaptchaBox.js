@@ -25,9 +25,10 @@ export class CaptchaBox extends Component {
     });
   }
 
-  onCaptchaSuccess = (res) => {
+  onCaptchaSuccess = (token) => {
     console.log("captcha success");
-    console.log(res);
+    //console.log(res);
+    this.props.onSuccess();
   }
 
   onCaptchaError = (res) => {

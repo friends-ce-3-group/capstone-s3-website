@@ -6,7 +6,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import { MakePayment } from './MakePayment';
 import { Categories } from '../utilities/ImageStore'
 import { TimezonesString } from '../utilities/Timezones'
-import { AWS_API_GATEWAY_UPLOAD_IMAGE_URL } from '../utilities/Constants'
+import { AWS_API_GATEWAY_UPLOAD_IMAGE_URL, AWS_CAPTCHA_INTEGRATION_SCRIPT } from '../utilities/Constants'
 import { 
   AWS_CF_HOST_NAME,
   AWS_CF_GET_CARDS_CATALOG_URL,
@@ -15,6 +15,7 @@ import {
   AWS_CF_GET_THUMBNAILS_URL
  } from '../utilities/Constants'
 import moment from 'moment-timezone';
+//import { CaptchaBox } from './CaptchaBox';
 
 export class CreateCard extends Component {
   static displayName = CreateCard.name;
@@ -38,12 +39,18 @@ export class CreateCard extends Component {
       uploadAccessType: 'Public',
       uploadCategoryType: 'All',
       cardsCatalog: [],
-      cardsCatalogIsLoading: true
+      cardsCatalogIsLoading: false
     };
 
   }
 
   componentDidMount = async () => {
+    const awsWafScript = document.createElement("script");
+    awsWafScript.src = `${AWS_CAPTCHA_INTEGRATION_SCRIPT}`;
+    awsWafScript.type = "text/javascript"
+    awsWafScript.defer = true;
+    awsWafScript.async = false;
+    document.head.appendChild(awsWafScript);
     await this.getCatalog();
   }
 
@@ -72,11 +79,13 @@ export class CreateCard extends Component {
           cardsCatalog: entries
         });
       }
+    }).catch(error => {
+      message.error("Error in loading Card Catalog. Please try again later.")
+    }).finally( _ => {
       this.setState({
         cardsCatalogIsLoading: false
       });
     });
-
   }
 
   getStepIndex = () => {
@@ -372,6 +381,9 @@ export class CreateCard extends Component {
                             />
                           </div>
                           <div style={{marginBottom: '15px'}}>
+                            {/** <CaptchaBox /> **/}
+                          </div>
+                          <div style={{marginBottom: '15px'}}>
                             <Button
                                 type="primary"
                                 onClick={() => this.handleFileUpload()}
@@ -390,6 +402,7 @@ export class CreateCard extends Component {
                   {
                     (
                       categorySelected !== 'Upload' ? 
+                        //(categorySelected !== 'All' ? ImageStore.filter(x => x.category === categorySelected) : ImageStore).map(card =>
                         (categorySelected !== 'All' ? cardsCatalog.filter(x => x.category === categorySelected) : cardsCatalog).map(card =>
                             <div
                               key={card.cardkey}

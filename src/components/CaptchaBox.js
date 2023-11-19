@@ -15,6 +15,7 @@ export class CaptchaBox extends Component {
   }
 
   showCaptcha = () => {
+    console.log("AWS_CAPTHCHA", AWS_CAPTCHA_KEY.subString(0, 8) + "**********")
     let container = document.querySelector("#my-captcha-container");
     window.AwsWafCaptcha.renderCaptcha(container, {
       apiKey: AWS_CAPTCHA_KEY,

@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 
 env:
+  AWS_CAPTCHA_KEY: ${{ secrets.AWS_CAPTHCA_KEY }}
   AWS_S3_BUCKET_NAME: friends-capstone-infra-s3-website
 
 jobs:
@@ -28,6 +29,13 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Install Dependencies in Package.json
       run: npm install --force
+
+    - name: Replace Variables
+      uses: cschleiden/replace-tokens@v1
+      with:
+        files: '["**/src/utilities/Constants.js"]'
+      env:
+        AWS_CAPTCHA_KEY: ${{ env.AWS_CAPTCHA_KEY }}
 
     - name: Build
       run: npm run build

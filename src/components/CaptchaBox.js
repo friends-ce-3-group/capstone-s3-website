@@ -11,6 +11,7 @@ export class CaptchaBox extends Component {
   }
 
   componentDidMount() {
+    console.log("captcha key", AWS_CAPTCHA_KEY.substring(0,8) + "*********")
     this.showCaptcha()
   }
 

@@ -15,7 +15,6 @@ export class CaptchaBox extends Component {
   }
 
   showCaptcha = () => {
-    console.log("AWS_CAPTHCHA", AWS_CAPTCHA_KEY.substring(0, 8) + "**********")
     let container = document.querySelector("#my-captcha-container");
     window.AwsWafCaptcha.renderCaptcha(container, {
       apiKey: AWS_CAPTCHA_KEY,
@@ -26,9 +25,9 @@ export class CaptchaBox extends Component {
     });
   }
 
-  onCaptchaSuccess = (res) => {
+  onCaptchaSuccess = (token) => {
     console.log("captcha success");
-    console.log(res);
+    //console.log(res);
   }
 
   onCaptchaError = (res) => {

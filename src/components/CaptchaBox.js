@@ -27,7 +27,7 @@ export class CaptchaBox extends Component {
 
   onCaptchaSuccess = (token) => {
     console.log("captcha success");
-    console.log("captcha success token", res);
+    console.log("captcha success token", token);
     //this.props.onSuccess();
   }
 

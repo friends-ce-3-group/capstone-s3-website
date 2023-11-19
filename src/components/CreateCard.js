@@ -381,23 +381,15 @@ export class CreateCard extends Component {
                               }))}
                             />
                           </div>
-                          {
-                              uploadFileList.length === 0 ? ""
-                              :
-                                <div style={{marginBottom: '15px'}}>
-                                  <CaptchaBox onSuccess={() => this.handleFileUpload()}/>
-                                  {isUploading ? 
-                                    <LoadingOutlined>Uploading</LoadingOutlined>
-                                    : 
-                                    ""
-                                  }
-                                </div>
+                          <div style={{marginBottom: '15px'}}>
+                            <CaptchaBox onSuccess={() => this.handleFileUpload()}/>
+                            {isUploading ? 
+                              <LoadingOutlined>Uploading</LoadingOutlined>
+                              : 
+                              ""
                             }
-                          
-
-                          
-                          {/** 
-                            <div style={{marginBottom: '15px'}}>
+                          </div>
+                          <div style={{marginBottom: '15px'}}>
                               <Button
                                   type="primary"
                                   onClick={() => this.handleFileUpload()}
@@ -407,10 +399,9 @@ export class CreateCard extends Component {
                                     marginTop: 16,
                                   }}
                                 >
-                                  
+                                  {isUploading ? 'Uploading' : 'Start Upload'}
                                 </Button>
                             </div>
-                          **/}
                         </div>
                       : ""
                   }

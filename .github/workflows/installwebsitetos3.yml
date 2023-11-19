@@ -35,7 +35,7 @@ jobs:
       with:
         files: '["**/src/utilities/Constants.js"]'
       env:
-        AWS_CAPTCHA_KEY: ${{ env.AWS_CAPTCHA_KEY }}
+        AWS_CAPTCHA_KEY: "${{ env.AWS_CAPTCHA_KEY }}"
 
     - name: Build
       run: npm run build

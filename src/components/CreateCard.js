@@ -279,7 +279,8 @@ export class CreateCard extends Component {
     console.log('File Information', uploadFileList[0])
     //console.log('File Upload URL', file_upload_url)
    
-    await fetch(file_upload_url, {
+    //await fetch(file_upload_url, {
+      await window.AwsWafIntegration.fetch(file_upload_url, {
       method: 'PUT',
       body: uploadFileList[0],
       headers: {
@@ -380,22 +381,36 @@ export class CreateCard extends Component {
                               }))}
                             />
                           </div>
-                          <div style={{marginBottom: '15px'}}>
-                            <CaptchaBox />
-                          </div>
-                          <div style={{marginBottom: '15px'}}>
-                            <Button
-                                type="primary"
-                                onClick={() => this.handleFileUpload()}
-                                disabled={uploadFileList.length === 0}
-                                loading={isUploading}
-                                style={{
-                                  marginTop: 16,
-                                }}
-                              >
-                                {isUploading ? 'Uploading' : 'Start Upload'}
-                              </Button>
-                          </div>
+                          {
+                              uploadFileList.length === 0 ? ""
+                              :
+                                <div style={{marginBottom: '15px'}}>
+                                  <CaptchaBox onSuccess={() => this.handleFileUpload()}/>
+                                  {isUploading ? 
+                                    <LoadingOutlined>Uploading</LoadingOutlined>
+                                    : 
+                                    ""
+                                  }
+                                </div>
+                            }
+                          
+
+                          
+                          {/** 
+                            <div style={{marginBottom: '15px'}}>
+                              <Button
+                                  type="primary"
+                                  onClick={() => this.handleFileUpload()}
+                                  disabled={uploadFileList.length === 0}
+                                  loading={isUploading}
+                                  style={{
+                                    marginTop: 16,
+                                  }}
+                                >
+                                  
+                                </Button>
+                            </div>
+                          **/}
                         </div>
                       : ""
                   }

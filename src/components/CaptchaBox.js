@@ -11,6 +11,7 @@ export class CaptchaBox extends Component {
   }
 
   componentDidMount() {
+    //console.log("captcha key", AWS_CAPTCHA_KEY.substring(0,8) + "*********")
     this.showCaptcha()
   }
 
@@ -27,7 +28,7 @@ export class CaptchaBox extends Component {
 
   onCaptchaSuccess = (token) => {
     console.log("captcha success");
-    //console.log(res);
+    console.log("captcha success token", "*****" + token.slice(-10));
     //this.props.onSuccess();
   }
 

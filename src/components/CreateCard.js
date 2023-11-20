@@ -300,12 +300,13 @@ export class CreateCard extends Component {
           message.success('upload successfully.');
         }
         else {
-          console.log("uploadresult failed");  
+          message.error('Upload Failed');
+          console.log("upload result failed1");  
         }
       })
       .catch((err) => {
-        //message.error('upload failed.');
-        console.log("uploadresult failed", err);
+        message.error('Upload Failed');
+        console.log("upload result failed2", err);
       })
       .finally(() => {
         this.setIsUploading(false);

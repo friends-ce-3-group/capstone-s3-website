@@ -386,14 +386,19 @@ export class CreateCard extends Component {
                               }))}
                             />
                           </div>
-                          <div style={{marginBottom: '15px'}}>
-                            <CaptchaBox onSuccess={() => this.handleFileUpload()}/>
-                            {isUploading ? 
-                              <LoadingOutlined>Uploading</LoadingOutlined>
-                              : 
-                              ""
-                            }
-                          </div>
+                          {
+                            uploadFileList.length === 0? ""
+                            :
+                              <div style={{marginBottom: '15px'}}>
+                                <CaptchaBox onSuccess={() => this.handleFileUpload()}/>
+                                {isUploading ? 
+                                  <LoadingOutlined>Uploading</LoadingOutlined>
+                                  : 
+                                  ""
+                                }
+                              </div>
+                          }
+
                           {
                             /**
                           <div style={{marginBottom: '15px'}}>

@@ -299,11 +299,9 @@ export class CreateCard extends Component {
           this.setUploadFileList([]);
           message.success('upload successfully.');
         }
-      })
-      .then(() => {
-        //this.setUploadFileList([]);
-        //message.success('upload successfully.');
-        console.log("uploadresult success");
+        else {
+          console.log("uploadresult failed");  
+        }
       })
       .catch((err) => {
         //message.error('upload failed.');
@@ -395,6 +393,8 @@ export class CreateCard extends Component {
                               ""
                             }
                           </div>
+                          {
+                            /**
                           <div style={{marginBottom: '15px'}}>
                               <Button
                                   type="primary"
@@ -406,8 +406,10 @@ export class CreateCard extends Component {
                                   }}
                                 >
                                   {isUploading ? 'Uploading' : 'Start Upload'}
-                                </Button>
-                            </div>
+                              </Button>
+                          </div> 
+                             **/
+                          }
                         </div>
                       : ""
                   }

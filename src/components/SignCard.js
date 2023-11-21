@@ -281,7 +281,14 @@ class SignCard extends Component {
           cardDetails ?
             <div style={{ display: 'flex', flexWrap: 'wrap' }} >
               <div>
-                <CountDown endTime={endTime} />
+                {
+                  !isExpired?
+                    <CountDown endTime={endTime} />
+                    :
+                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent:'center' }} >
+                      Card has been sent to {cardDetails.recipientName}.
+                    </div>
+                }
                 <Flippy
                   flipOnHover={false} // default false
                   flipOnClick={false} // default false
@@ -342,76 +349,76 @@ class SignCard extends Component {
               </div>
               {
                 !isExpired?
-                <div className={'card-input-area'}>
-                {
-                  !isMessageInserted ?
-                    <div>
-                      <Select
-                        style={{}}
-                        defaultValue={'text'}
-                        popupMatchSelectWidth={false}
-                        onChange={this.toggleAddType}
-                        options={[
-                          {
-                            value: 'text',
-                            label: 'Add Text'
-                          },
-                          {
-                            value: 'image',
-                            label: 'Add Image',
-                            disabled: true
+                  <div className={'card-input-area'}>
+                  {
+                    !isMessageInserted ?
+                      <div>
+                        <Select
+                          style={{}}
+                          defaultValue={'text'}
+                          popupMatchSelectWidth={false}
+                          onChange={this.toggleAddType}
+                          options={[
+                            {
+                              value: 'text',
+                              label: 'Add Text'
+                            },
+                            {
+                              value: 'image',
+                              label: 'Add Image',
+                              disabled: true
+                            }
+                          ]}
+                        />
+                        {
+                          addType === 'text' ?
+                            <div>
+                              <Input
+                                className={'card-input-area-item'}
+                                value={yourName}
+                                onChange={(e) => this.setYourName(e.target.value)}
+                                width={'50px'}
+                                placeholder={'Your Name'}
+                                maxLength={32}
+                              />
+                              <ReactQuill
+                                style={{ width: '480px' }}
+                                theme='snow'
+                                modules={this.modules}
+                                placeholder={'Your Message'}
+                                value={yourEntry}
+                                onChange={this.setValue}
+                              />
+                              <Space className={'card-input-area-item'} wrap>
+                                <Button type={'primary'} onClick={this.seePreview}>See Preview</Button>
+                                <Button type={'primary'} onClick={this.confirmEntry} disabled={!seenPreview}>Confirm</Button>
+                              </Space>
+                            </div>
+                            :
+                            <div>Image</div>
                           }
-                        ]}
-                      />
-                      {
-                        addType === 'text' ?
-                          <div>
-                            <Input
-                              className={'card-input-area-item'}
-                              value={yourName}
-                              onChange={(e) => this.setYourName(e.target.value)}
-                              width={'50px'}
-                              placeholder={'Your Name'}
-                              maxLength={32}
-                            />
-                            <ReactQuill
-                              style={{ width: '480px' }}
-                              theme='snow'
-                              modules={this.modules}
-                              placeholder={'Your Message'}
-                              value={yourEntry}
-                              onChange={this.setValue}
-                            />
-                            <Space className={'card-input-area-item'} wrap>
-                              <Button type={'primary'} onClick={this.seePreview}>See Preview</Button>
-                              <Button type={'primary'} onClick={this.confirmEntry} disabled={!seenPreview}>Confirm</Button>
-                            </Space>
-                          </div>
-                          :
-                          <div>Image</div>
-                        }
+                      </div>
+                    :
+                    <div className={'sign-card-link-area'}>
+                      <div>
+                        <Space>
+                          <CheckCircleTwoTone twoToneColor="#52c41a" />
+                          {"You have successully signed " + cardDetails.recipientName + "'s card. Create yours today!"}
+                        </Space>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        <a href={'./'} >{`${AWS_CF_HOST_NAME}`}</a>
+                      </div>
                     </div>
+                  }
+                  </div> 
                   :
-                  <div className={'sign-card-link-area'}>
-                    <div>
-                      <Space>
-                        <CheckCircleTwoTone twoToneColor="#52c41a" />
-                        {"You have successully signed " + cardDetails.recipientName + "'s card. Create yours today!"}
-                      </Space>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      <a href={'./'} >{`${AWS_CF_HOST_NAME}`}</a>
-                    </div>
-                  </div>
-                }
-              </div> 
-              :
-              <div>Card has been sent to { cardDetails.recipientName }</div>
+                  ""
               }
               
             </div>
             :
-            <div>No card found.</div>
+            <div>Error: No card found.</div>
         }
         
       </div>

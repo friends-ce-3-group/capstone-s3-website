@@ -7,7 +7,7 @@ import Flippy, { FrontSide, BackSide } from 'react-flippy';
 import { v4 as uuidv4 } from 'uuid';
 import 'react-quill/dist/quill.snow.css';
 //import defaultImage from '../images/farewell1.jpg'
-import { Home } from './Home';
+//import { Home } from './Home';
 import { CountDown } from './CountDown';
 import moment from 'moment-timezone';
 import { AWS_CF_HOST_NAME, AWS_CF_GET_CARD_URL, AWS_CF_GET_MESSAGES_URL, AWS_CF_SIGN_CARD_URL, AWS_CF_GET_RESIZED_URL } from '../utilities/Constants'
@@ -278,7 +278,7 @@ class SignCard extends Component {
     return (
       <div className={'canvas'}>
         {
-          !isExpired && cardDetails ?
+          cardDetails ?
             <div style={{ display: 'flex', flexWrap: 'wrap' }} >
               <div>
                 <CountDown endTime={endTime} />
@@ -340,7 +340,9 @@ class SignCard extends Component {
                   </BackSide>
                 </Flippy>
               </div>
-              <div className={'card-input-area'}>
+              {
+                !isExpired?
+                <div className={'card-input-area'}>
                 {
                   !isMessageInserted ?
                     <div>
@@ -402,10 +404,14 @@ class SignCard extends Component {
                     </div>
                   </div>
                 }
-              </div>
+              </div> 
+              :
+              <div>Card has been sent to { cardDetails.recipientName }</div>
+              }
+              
             </div>
             :
-            <Home />
+            <div>No card found.</div>
         }
         
       </div>

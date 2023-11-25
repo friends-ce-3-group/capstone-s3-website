@@ -15,7 +15,6 @@ env:
 jobs:
   vulnarability_checks:
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     strategy:
       matrix:
@@ -33,7 +32,8 @@ jobs:
       run: npm install --force
       
     - name: Vulnarability Scan - npm audit
-      run: npm audit fix --force
+      continue-on-error: true
+      run: npm audit
 
 
     - name: Install Snyk CLI

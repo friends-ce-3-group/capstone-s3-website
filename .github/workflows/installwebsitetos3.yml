@@ -31,7 +31,7 @@ jobs:
     - name: Install Dependencies in Package.json
       run: npm install --force
       
-    - name: Vulnarability Scan - npm audit
+    - name: npm audit
       continue-on-error: true
       run: npm audit
 
@@ -40,7 +40,7 @@ jobs:
       continue-on-error: true
       run: npm install -g snyk
 
-    - name: Run Snyk to check for vulnerabilities
+    - name: package-osc-scan-snyk-scan
       continue-on-error: true
       uses: snyk/actions/node@master
       env:
@@ -48,13 +48,13 @@ jobs:
       with:
         args: --severity-threshold=high
       
-    - name: Run Snyk Code Scan And Check Snyk Scan Results
+    - name: package-app-scan-snyk-scan
       continue-on-error: true
       run: snyk code test
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-    - name: Run Snyk Code Scan And Check Snyk Scan Results
+    - name: package-iac-scan-snyk-scan
       continue-on-error: true        
       uses: snyk/actions/iac@master
       env:

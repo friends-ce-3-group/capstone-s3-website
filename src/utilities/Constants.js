@@ -7,7 +7,8 @@ export const AWS_CAPTCHA_KEY = "#AWS_CAPTCHA_KEY#"
 export const AWS_API_GATEWAY_UPLOAD_IMAGE_URL = "#API_GATEWAY_UPLOAD_IMAGES_URL#/friends-capstone-infra-s3-images/originals/{filename}";
 
 //export const AWS_ALB_CRUD_HOST_NAME = "http://friends-capstone-ecs-shared-alb-2059628003.us-west-2.elb.amazonaws.com:5000";
-export const AWS_CF_HOST_NAME = "https://dae7avsudwv03.cloudfront.net";
+//export const AWS_CF_HOST_NAME = "https://dae7avsudwv03.cloudfront.net";
+export const AWS_CF_HOST_NAME = "#CLOUDFRONT_DOMAIN_NAME#";
 export const AWS_CF_GET_CARDS_CATALOG_URL = "api/cardsCatalog";
 export const AWS_CF_CREATE_CARD_URL = "api/createCard";
 export const AWS_CF_GET_CARD_URL = "api/getCard";

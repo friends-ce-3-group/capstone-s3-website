@@ -9,6 +9,7 @@ on:
 env:
   AWS_CAPTCHA_KEY: ${{ secrets.AWS_CAPTCHA_KEY }}
   API_GATEWAY_UPLOAD_IMAGES_URL : ${{ vars.API_GATEWAY_UPLOAD_IMAGES_URL }}
+  CLOUDFRONT_DOMAIN_NAME : ${{ vars.CLOUDFRONT_DOMAIN_NAME }}
   AWS_S3_BUCKET_NAME: friends-capstone-infra-s3-website
 
 
@@ -90,6 +91,7 @@ jobs:
       env:
         AWS_CAPTCHA_KEY: "${{ env.AWS_CAPTCHA_KEY }}"
         API_GATEWAY_UPLOAD_IMAGES_URL: "${{ env.API_GATEWAY_UPLOAD_IMAGES_URL }}"
+        CLOUDFRONT_DOMAIN_NAME: "${{ env.CLOUDFRONT_DOMAIN_NAME }}"
 
     - name: Build
       run: npm run build
